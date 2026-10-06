@@ -48,12 +48,12 @@ static func act(a: Actor, game: GameSim, def: Dictionary) -> void:
 
 
 static func _passable_for(a: Actor, map: WorldMap, p: Vector2i, def: Dictionary) -> bool:
-	if not map.is_clear_for_walk(p):
-		return false
 	var swimmer := bool(def.get("swimmer", false))
 	if Terrain.is_water(map.tile(p)):
 		return swimmer
-	return true
+	if bool(def.get("water_only", false)):
+		return false
+	return map.is_clear_for_walk(p)
 
 
 static func _step_toward(a: Actor, game: GameSim, map: WorldMap, target: Vector2i, def: Dictionary) -> void:

@@ -93,6 +93,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed("interact"):
 		_do_interact()
+		_mark_poi_discovery()
 		return
 	if event.is_action_pressed("attack"):
 		_do_attack()
@@ -262,6 +263,9 @@ func _toggle_map() -> void:
 	var lines: Array[String] = []
 	lines.append("[b]Archipelago[/b] — discovered islands only")
 	var origin: Vector2 = game.islands[game.current_island_id]["pos"]
+	menu_actions = []
+	var idx := 1
+	var can_sail := game.player_raft_id != 0 and game.current_map().tile(game.player.pos) == Terrain.T.OCEAN and game.weather != "storm"
 	for id: int in game.islands:
 		var entry: Dictionary = game.islands[id]
 		if not entry["discovered"]:
@@ -269,8 +273,32 @@ func _toggle_map() -> void:
 		var offset: Vector2 = entry["pos"] - origin
 		var here := " (you are here)" if id == game.current_island_id else ""
 		lines.append("• %s — %d km %s, %d km N%s" % [str(entry["name"]), int(absf(offset.x) / 10.0), "E" if offset.x >= 0 else "W", int(absf(offset.y) / 10.0), here])
-	lines.append("\n[i]Sea travel becomes available once you build a raft.[/i]")
-	hud.open_panel("map", "World Map", "\n".join(lines))
+		if can_sail and id != game.current_island_id:
+			lines.append("  %d) Sail here" % idx)
+			menu_actions.append({"type": "sail", "id": id})
+			idx += 1
+	if game.player_raft_id != 0:
+		if game.current_map().tile(game.player.pos) == Terrain.T.SHALLOW:
+			lines.append("\n[i]Sail into open ocean (move the raft onto deep water) to set a course.[/i]")
+		elif game.weather == "storm":
+			lines.append("\n[i]Storm at sea — no course can be set.[/i]")
+	else:
+		lines.append("\n[i]Sea travel becomes available once you build a raft.[/i]")
+	if menu_actions.is_empty():
+		hud.open_panel("map", "World Map", "\n".join(lines))
+	else:
+		lines.append("0) Close")
+		hud.open_panel("menu", "World Map", "\n".join(lines))
+
+
+func _mark_poi_discovery() -> void:
+	var map := game.current_map()
+	for pos: Vector2i in game._adjacent_and_current(game.player.pos):
+		var s := map.structure(pos)
+		if bool(s.get("poi", false)) and not s.get("discovered", false):
+			s["discovered"] = true
+			map.structures[pos] = s
+			hud.show_toast("You discover: %s" % str(Data.structure(str(s["kind"])).get("name", s["kind"])))
 
 
 func _toggle_panel(mode: String) -> void:
@@ -443,6 +471,16 @@ func _interact_inventory() -> void:
 	var lines: Array[String] = []
 	menu_actions = []
 	var idx := 1
+	# Fishing option when beside shallow water.
+	var near_shallow := false
+	for pos: Vector2i in game._adjacent_and_current(p.pos):
+		if game.current_map().tile(pos) == Terrain.T.SHALLOW:
+			near_shallow = true
+			break
+	if near_shallow:
+		lines.append("%d) Fish" % idx)
+		menu_actions.append({"type": "fish"})
+		idx += 1
 	for id: String in consumables:
 		lines.append("%d) Consume %s" % [idx, str(Data.item(id).get("name", id))])
 		menu_actions.append({"type": "consume", "id": id})
@@ -499,6 +537,10 @@ func _handle_menu_digit(event: InputEvent) -> void:
 			game.player_eat_or_drink(str(action["id"]))
 		"equip":
 			game.player_equip(str(action["id"]))
+		"fish":
+			game.player_fish()
+		"sail":
+			game.travel_to(int(action["id"]))
 		_:
 			pass
 

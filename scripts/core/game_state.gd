@@ -93,6 +93,8 @@ func _spawn_creatures(island_id: int, difficulty: String) -> void:
 		"danger": {"boar": 3, "snake": 4, "hostile_survivor": 4},
 	}
 	var plan: Dictionary = counts.get(difficulty, counts["starter"])
+	if difficulty in ["wreck", "danger"]:
+		plan["shark"] = 2
 	for species: String in plan:
 		var def := Data.creature(species)
 		if def.is_empty():
@@ -416,7 +418,7 @@ func player_gather() -> bool:
 		if qty <= 0:
 			continue
 		var item_id := str(y["id"])
-		if player.add_item(item_id, qty):
+		if player.add_item(item_id, qty, clock_minutes):
 			total_gathered += qty
 		else:
 			map.add_ground_item(target, item_id, qty)
@@ -454,7 +456,7 @@ func player_pickup() -> bool:
 	var picked := 0
 	var leftovers: Array = []
 	for it: Dictionary in items:
-		if player.add_item(str(it["id"]), int(it["qty"])):
+		if player.add_item(str(it["id"]), int(it["qty"]), clock_minutes):
 			picked += int(it["qty"])
 			Events.item_picked_up.emit(str(it["id"]))
 		else:
@@ -475,17 +477,28 @@ func player_eat_or_drink(item_id: String) -> bool:
 	var def := Data.item(item_id)
 	if def.is_empty():
 		return false
-	if not player.remove_item(item_id, 1):
+	var consumed := player.consume_one(item_id)
+	if not bool(consumed["ok"]):
 		return false
 	var calories := float(def.get("calories", 0))
 	var hydration := float(def.get("hydration", 0))
+	# Spoilage: raw foods rot. Old food gives half value and may sicken.
+	var spoils := float(def.get("spoils_hours", 0))
+	var age_hours := (clock_minutes - int(consumed["acquired"])) / 60.0
+	var spoiled := spoils > 0.0 and age_hours > spoils
+	if spoiled:
+		calories *= 0.5
+		hydration *= 0.5
 	player.hunger = clampf(player.hunger + calories * 0.1, 0.0, 100.0)
 	player.thirst = clampf(player.thirst + hydration * 0.2, 0.0, 100.0)
-	# Dirty water may cause illness (pain + hp risk).
-	if bool(def.get("dirty", false)) and rng.chance(float(Data.balance("dirty_water_sickness_chance", 0.35))):
+	# Dirty water or spoiled food may cause illness (pain + hp risk).
+	var sickness := bool(def.get("dirty", false)) and rng.chance(float(Data.balance("dirty_water_sickness_chance", 0.35)))
+	if spoiled and rng.chance(0.5):
+		sickness = true
+	if sickness:
 		player.pain = clampf(player.pain + 15.0, 0.0, 100.0)
 		_damage_part(player, "torso", 6, false)
-		Events.toast.emit("That water was foul. You feel sick.")
+		Events.toast.emit("That was foul. You feel sick.")
 	if str(def.get("category")) == "medical":
 		var heal := int(def.get("heal", 0))
 		if heal > 0:
@@ -494,7 +507,7 @@ func player_eat_or_drink(item_id: String) -> bool:
 			for part: String in player.body:
 				player.body[part]["bleeding"] = false
 			player.pain = maxf(player.pain - 20.0, 0.0)
-	Events.toast.emit("Consumed %s." % str(def.get("name", item_id)))
+	Events.toast.emit(("Consumed spoiled %s." if spoiled else "Consumed %s.") % str(def.get("name", item_id)))
 	turn_manager.spend(turn_manager.player_action_cost(int(Data.balance("consume_cost", 50))))
 	return true
 
@@ -628,6 +641,110 @@ func disembark() -> bool:
 			turn_manager.spend(turn_manager.player_action_cost(int(Data.balance("move_cost", 100))))
 			return true
 	return false
+
+
+func travel_to(target_id: int) -> bool:
+	## Sail to another island. Requires raft on open ocean; blocked by storms.
+	if player_raft_id == 0:
+		Events.toast.emit("You need a raft to sail.")
+		return false
+	if not islands.has(target_id) or target_id == current_island_id:
+		return false
+	if weather == "storm":
+		Events.toast.emit("A storm rages. Sailing now would be suicide.")
+		return false
+	if current_map().tile(player.pos) == Terrain.T.SHALLOW:
+		Events.toast.emit("Sail into open ocean before setting a course.")
+		return false
+	var from_pos: Vector2 = islands[current_island_id]["pos"]
+	var to_pos: Vector2 = islands[target_id]["pos"]
+	var dist := from_pos.distance_to(to_pos)
+	var minutes := int(dist * float(Data.balance("travel_minutes_per_unit", 2.0)))
+	Events.toast.emit("You sail for %s..." % str(islands[target_id]["name"]))
+	advance_clock(minutes * 100)
+	if player == null or not player.alive:
+		stats["cause_of_death"] = "lost at sea"
+		return true
+	islands[target_id]["discovered"] = true
+	if not bool(islands[target_id].get("populated", false)):
+		_spawn_creatures(target_id, str(islands[target_id]["difficulty"]))
+		islands[target_id]["populated"] = true
+	var old_id := current_island_id
+	current_island_id = target_id
+	stats["islands_discovered"] = _count_discovered()
+	var arrival := _arrival_shore(target_id, from_pos)
+	var r: Dictionary = rafts[player_raft_id]
+	r["island_id"] = target_id
+	r["pos"] = [arrival.x, arrival.y]
+	player.pos = arrival
+	player.island_id = target_id
+	_reveal_around(arrival, _view_radius())
+	Events.world_regenerated.emit()
+	Events.log_msg.emit("traveled %d -> %d (%d min)" % [old_id, target_id, minutes], "info")
+	Events.toast.emit("You make landfall on %s after %d h at sea." % [str(islands[target_id]["name"]), minutes / 60])
+	return true
+
+
+func _count_discovered() -> int:
+	var n := 0
+	for id: int in islands:
+		if bool(islands[id].get("discovered", false)):
+			n += 1
+	return n
+
+
+func _arrival_shore(target_id: int, from_pos: Vector2) -> Vector2i:
+	## Shallow-water tile on the target island closest to the origin side.
+	var to_pos: Vector2 = islands[target_id]["pos"]
+	var dir_back := (from_pos - to_pos).normalized()
+	var map: WorldMap = islands[target_id]["map"]
+	var center := Vector2(map.width / 2.0, map.height / 2.0)
+	var best := Vector2i(-1, -1)
+	var best_score := -1e9
+	for y: int in map.height:
+		for x: int in map.width:
+			var p := Vector2i(x, y)
+			if map.tile(p) != Terrain.T.SHALLOW:
+				continue
+			var near_land := false
+			for d: Vector2i in _dirs8():
+				if map.is_clear_for_walk(p + d):
+					near_land = true
+					break
+			if not near_land:
+				continue
+			var score := (Vector2(p) - center).dot(dir_back)
+			if score > best_score:
+				best_score = score
+				best = p
+	if best == Vector2i(-1, -1):
+		# Fallback: any shallow tile.
+		for y: int in map.height:
+			for x: int in map.width:
+				if map.tile(Vector2i(x, y)) == Terrain.T.SHALLOW:
+					return Vector2i(x, y)
+	return best
+
+
+func player_fish() -> bool:
+	var near_shallow := false
+	for pos: Vector2i in _adjacent_and_current(player.pos):
+		if current_map().tile(pos) == Terrain.T.SHALLOW:
+			near_shallow = true
+			break
+	if not near_shallow:
+		Events.toast.emit("Fish from beside shallow water.")
+		return false
+	var chance := float(Data.balance("fish_chance_base", 0.3)) + 0.08 * player.skill_level("fishing")
+	turn_manager.spend(turn_manager.player_action_cost(int(Data.balance("fish_cost", 400))))
+	if rng.randf() < chance:
+		player.add_item("raw_fish", 1, clock_minutes)
+		player.add_skill_xp("fishing", 8.0)
+		Events.toast.emit("You catch a fish!")
+		return true
+	player.add_skill_xp("fishing", 2.0)
+	Events.toast.emit("The line comes up empty.")
+	return true
 
 
 # ---------------------------------------------------------------- creature turns

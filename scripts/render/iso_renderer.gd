@@ -161,6 +161,23 @@ func _draw_structure(p: Vector2i, map: WorldMap, screen: Vector2) -> void:
 			_diamond(screen, Color(0.55, 0.45, 0.32, 0.6))
 		"door":
 			draw_rect(Rect2(screen + Vector2(-6, -14), Vector2(12, 16)), Color(0.5, 0.38, 0.22), true)
+		"shipwreck":
+			for i: int in 4:
+				var xx := (i - 1.5) * 7.0
+				draw_line(screen + Vector2(xx, -2), screen + Vector2(xx * 0.4, -18), Color(0.42, 0.30, 0.18), 3.0)
+			draw_line(screen + Vector2(-12, -4), screen + Vector2(12, -4), Color(0.35, 0.25, 0.15), 2.5)
+		"fishing_boat_wreck":
+			var hull := PackedVector2Array([
+				screen + Vector2(-16, 2), screen + Vector2(16, 2), screen + Vector2(10, -8), screen + Vector2(-10, -8),
+			])
+			draw_colored_polygon(hull, Color(0.48, 0.35, 0.20))
+		"campsite_remains":
+			draw_arc(screen + Vector2(0, 0), 7.0, 0, TAU, 12, Color(0.5, 0.45, 0.4), 2.0)
+			draw_line(screen + Vector2(-6, 4), screen + Vector2(6, -2), Color(0.45, 0.32, 0.18), 2.5)
+		"survivor_shack":
+			draw_rect(Rect2(screen + Vector2(-12, -12), Vector2(24, 14)), Color(0.45, 0.34, 0.20), true)
+			draw_line(screen + Vector2(-14, -12), screen + Vector2(0, -22), Color(0.35, 0.25, 0.15), 2.5)
+			draw_line(screen + Vector2(14, -12), screen + Vector2(0, -22), Color(0.35, 0.25, 0.15), 2.5)
 
 
 func _draw_ground_items(p: Vector2i, map: WorldMap, screen: Vector2) -> void:

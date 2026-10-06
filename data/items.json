@@ -33,6 +33,7 @@
 	"pipe_round": {"name": "Pipe Round", "category": "component", "weight": 0.05, "volume": 0.05},
 
 	"backpack": {"name": "Backpack", "category": "clothing", "weight": 0.6, "volume": 1.5, "slot": "body", "capacity_weight_bonus": 25.0, "capacity_volume_bonus": 25.0},
+	"lighter": {"name": "Lighter", "category": "tool", "weight": 0.05, "volume": 0.05, "starts_fire": true},
 	"flashlight": {"name": "Flashlight", "category": "tool", "weight": 0.4, "volume": 0.5, "needs_battery": true},
 	"battery": {"name": "Battery", "category": "component", "weight": 0.1, "volume": 0.1}
 }

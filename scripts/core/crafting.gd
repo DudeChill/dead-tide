@@ -54,7 +54,7 @@ static func craft(game: GameSim, recipe_id: String) -> bool:
 	# Produce.
 	var result_id := str(recipe["result"])
 	var qty := int(recipe.get("result_qty", 1))
-	if not p.add_item(result_id, qty):
+	if not p.add_item(result_id, qty, game.clock_minutes):
 		# Drop at feet if inventory full.
 		game.current_map().add_ground_item(p.pos, result_id, qty)
 	var result_def := Data.item(result_id)

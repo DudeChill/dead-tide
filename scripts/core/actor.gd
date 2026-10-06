@@ -176,7 +176,7 @@ func count_item(item_id: String) -> int:
 	return n
 
 
-func add_item(item_id: String, qty: int) -> bool:
+func add_item(item_id: String, qty: int, acquired: int = 0) -> bool:
 	## Weight/volume constrained add. Returns false if it does not fit.
 	var def := Data.item(item_id)
 	if def.is_empty():
@@ -190,9 +190,31 @@ func add_item(item_id: String, qty: int) -> bool:
 			it["qty"] = int(it.get("qty", 0)) + qty
 			Events.inventory_changed.emit()
 			return true
-	inventory.append({"id": item_id, "qty": qty, "durability": float(def.get("durability", 100.0))})
+	inventory.append({"id": item_id, "qty": qty, "durability": float(def.get("durability", 100.0)), "acquired": acquired})
 	Events.inventory_changed.emit()
 	return true
+
+
+func consume_one(item_id: String) -> Dictionary:
+	## Removes one unit of item_id (oldest stack first). Returns
+	## {"ok": bool, "acquired": int}.
+	var best_i := -1
+	var best_acquired := 1 << 40
+	for i: int in inventory.size():
+		var it: Dictionary = inventory[i]
+		if str(it.get("id")) == item_id and int(it.get("qty", 0)) > 0:
+			var ac := int(it.get("acquired", 0))
+			if ac < best_acquired:
+				best_acquired = ac
+				best_i = i
+	if best_i < 0:
+		return {"ok": false, "acquired": 0}
+	var it: Dictionary = inventory[best_i]
+	it["qty"] = int(it["qty"]) - 1
+	if int(it["qty"]) <= 0:
+		inventory.remove_at(best_i)
+	Events.inventory_changed.emit()
+	return {"ok": true, "acquired": best_acquired}
 
 
 func remove_item(item_id: String, qty: int) -> bool:

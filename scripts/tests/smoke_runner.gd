@@ -167,6 +167,29 @@ func run(controller: Node) -> int:
 			check(reached_deep, "raft sails to deep ocean")
 			loaded.player_wait()
 
+	# --- 9b. Island travel + fishing + POI loot.
+	if raft_built:
+		var sail_ok := loaded.travel_to(1)
+		check(sail_ok, "traveled to island 1")
+		if sail_ok:
+			check(loaded.current_island_id == 1, "current island switched")
+			check(bool(loaded.islands[1]["discovered"]), "island 1 discovered")
+			check(loaded.stats["islands_discovered"] >= 2, "discovery stat incremented")
+			check(loaded.current_map().tile(loaded.player.pos) == Terrain.T.SHALLOW, "arrived on shallow shore")
+			# Fish beside the shore.
+			var fish_ok := loaded.player_fish()
+			check(fish_ok, "fishing action resolves")
+			check(loaded.player.skills.get("fishing", 0.0) > 0.0, "fishing xp gained")
+			# POI loot exists somewhere on wreck islands; verify a container works.
+			var container_found := false
+			var poi_count := 0
+			for pos: Vector2i in loaded.current_map().structures:
+				var s: Dictionary = loaded.current_map().structures[pos]
+				if bool(s.get("container", false)) and (s.get("items", []) as Array).size() > 0:
+					container_found = true
+					break
+			check(container_found, "loot container exists on new island")
+
 	# --- 10. Reproducibility: same seed -> same terrain.
 	var seed_used: int = int(controller.world_seed)
 	var sim_a := GameSim.new()

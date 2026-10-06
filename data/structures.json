@@ -43,5 +43,63 @@
 		"name": "Raft", "ingredients": [{"id": "log", "qty": 6}, {"id": "cordage", "qty": 6}, {"id": "palm_leaf", "qty": 2}],
 		"placement": "shallow_water_adjacent", "time_cost": 800, "is_raft": true,
 		"desc": "Your way off the island. Build at the shoreline, then board."
+	},
+	"shipwreck": {
+		"name": "Shipwreck", "ingredients": [], "placement": "land", "time_cost": 0,
+		"container": true, "poi": true,
+		"loot": [
+			{"id": "flashlight", "qty": [1, 1], "chance": 0.6},
+			{"id": "battery", "qty": [1, 2], "chance": 0.5},
+			{"id": "rope", "qty": [1, 2], "chance": 0.7},
+			{"id": "plastic", "qty": [2, 4], "chance": 0.9},
+			{"id": "scrap_metal", "qty": [1, 2], "chance": 0.6},
+			{"id": "bandage", "qty": [1, 2], "chance": 0.5},
+			{"id": "glass_bottle", "qty": [1, 2], "chance": 0.7},
+			{"id": "fuel_can", "qty": [1, 1], "chance": 0.4},
+			{"id": "cloth_scrap", "qty": [1, 3], "chance": 0.8}
+		],
+		"desc": "The ribs of a wrecked ship. Contains salvage."
+	},
+	"campsite_remains": {
+		"name": "Abandoned Campsite", "ingredients": [], "placement": "land", "time_cost": 0,
+		"container": true, "poi": true,
+		"loot": [
+			{"id": "bandage", "qty": [0, 1], "chance": 0.5},
+			{"id": "coconut", "qty": [1, 2], "chance": 0.7},
+			{"id": "cloth_scrap", "qty": [1, 2], "chance": 0.8},
+			{"id": "glass_bottle", "qty": [1, 1], "chance": 0.5},
+			{"id": "stone_knife", "qty": [1, 1], "chance": 0.25},
+			{"id": "backpack", "qty": [1, 1], "chance": 0.3},
+			{"id": "lighter", "qty": [1, 1], "chance": 0.3}
+		],
+		"desc": "Someone camped here once. Their things remain."
+	},
+	"survivor_shack": {
+		"name": "Survivor Shack", "ingredients": [], "placement": "land", "time_cost": 0,
+		"container": true, "poi": true,
+		"loot": [
+			{"id": "backpack", "qty": [1, 1], "chance": 0.45},
+			{"id": "hammer", "qty": [1, 1], "chance": 0.4},
+			{"id": "bandage", "qty": [1, 2], "chance": 0.6},
+			{"id": "cooked_meat", "qty": [1, 2], "chance": 0.5},
+			{"id": "fresh_water", "qty": [1, 2], "chance": 0.5},
+			{"id": "rope", "qty": [1, 1], "chance": 0.5},
+			{"id": "lighter", "qty": [1, 1], "chance": 0.3},
+			{"id": "antibiotics", "qty": [1, 2], "chance": 0.35}
+		],
+		"desc": "A crude shack. Maybe useful things inside."
+	},
+	"fishing_boat_wreck": {
+		"name": "Wrecked Fishing Boat", "ingredients": [], "placement": "shallow", "time_cost": 0,
+		"container": true, "poi": true,
+		"loot": [
+			{"id": "rope", "qty": [1, 2], "chance": 0.8},
+			{"id": "raw_fish", "qty": [1, 3], "chance": 0.7},
+			{"id": "plastic", "qty": [1, 3], "chance": 0.8},
+			{"id": "stick", "qty": [2, 4], "chance": 0.6},
+			{"id": "cloth_scrap", "qty": [1, 2], "chance": 0.7},
+			{"id": "hammer", "qty": [1, 1], "chance": 0.35}
+		],
+		"desc": "A fishing boat beached in the shallows."
 	}
 }
