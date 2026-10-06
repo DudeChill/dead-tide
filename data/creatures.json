@@ -1,0 +1,32 @@
+{
+	"crab": {
+		"name": "Beach Crab", "profile": "passive", "hp": 10, "dodge": 12,
+		"damage": 4, "sight": 4, "attack_range": 1.0, "speed": 70,
+		"wander_radius": 4, "swimmer": false,
+		"loot": [{"id": "raw_meat", "qty": 1, "chance": 0.7}]
+	},
+	"boar": {
+		"name": "Wild Boar", "profile": "territorial", "hp": 35, "dodge": 4,
+		"damage": 11, "sight": 7, "attack_range": 1.0, "speed": 115,
+		"wander_radius": 8, "territory": 10, "swimmer": false,
+		"loot": [{"id": "raw_meat", "qty": 3, "chance": 1.0}, {"id": "cloth_scrap", "qty": 1, "chance": 0.3}]
+	},
+	"snake": {
+		"name": "Reef Snake", "profile": "predator", "hp": 8, "dodge": 16,
+		"damage": 6, "sight": 5, "attack_range": 1.0, "speed": 90,
+		"wander_radius": 6, "swimmer": true,
+		"loot": [{"id": "raw_meat", "qty": 1, "chance": 0.5}]
+	},
+	"shark": {
+		"name": "Tide Shark", "profile": "predator", "hp": 45, "dodge": 6,
+		"damage": 18, "sight": 9, "attack_range": 1.0, "speed": 135,
+		"wander_radius": 14, "swimmer": true, "water_only": true,
+		"loot": [{"id": "raw_meat", "qty": 4, "chance": 1.0}]
+	},
+	"hostile_survivor": {
+		"name": "Hostile Survivor", "profile": "hostile_humanoid", "hp": 30, "dodge": 6,
+		"damage": 9, "sight": 8, "attack_range": 1.0, "speed": 110,
+		"wander_radius": 10, "swimmer": false,
+		"loot": [{"id": "bandage", "qty": 1, "chance": 0.5}, {"id": "plastic", "qty": 2, "chance": 0.7}, {"id": "scrap_metal", "qty": 1, "chance": 0.4}]
+	}
+}

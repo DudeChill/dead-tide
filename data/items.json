@@ -1,0 +1,38 @@
+{
+	"stone": {"name": "Stone", "category": "material", "weight": 1.0, "volume": 0.6},
+	"flint": {"name": "Flint", "category": "material", "weight": 0.3, "volume": 0.2},
+	"stick": {"name": "Stick", "category": "material", "weight": 0.2, "volume": 0.5},
+	"driftwood": {"name": "Driftwood", "category": "material", "weight": 1.2, "volume": 1.5},
+	"log": {"name": "Log", "category": "material", "weight": 6.0, "volume": 5.0},
+	"palm_leaf": {"name": "Palm Leaf", "category": "material", "weight": 0.3, "volume": 1.0},
+	"plant_fiber": {"name": "Plant Fiber", "category": "material", "weight": 0.1, "volume": 0.3},
+	"cordage": {"name": "Cordage", "category": "material", "weight": 0.2, "volume": 0.2},
+	"plastic": {"name": "Plastic Scrap", "category": "material", "weight": 0.2, "volume": 0.4},
+	"cloth_scrap": {"name": "Cloth Scrap", "category": "material", "weight": 0.3, "volume": 0.5},
+	"scrap_metal": {"name": "Scrap Metal", "category": "material", "weight": 1.5, "volume": 1.0},
+	"rope": {"name": "Rope", "category": "material", "weight": 0.8, "volume": 1.0},
+	"glass_bottle": {"name": "Glass Bottle", "category": "container", "weight": 0.5, "volume": 0.8},
+	"fuel_can": {"name": "Fuel Can", "category": "component", "weight": 3.0, "volume": 3.0},
+
+	"coconut": {"name": "Coconut", "category": "food", "weight": 0.6, "volume": 0.6, "calories": 8, "hydration": 30},
+	"raw_fish": {"name": "Raw Fish", "category": "food", "weight": 0.5, "volume": 0.5, "calories": 15, "spoils_hours": 18},
+	"cooked_fish": {"name": "Cooked Fish", "category": "food", "weight": 0.4, "volume": 0.4, "calories": 32},
+	"raw_meat": {"name": "Raw Meat", "category": "food", "weight": 0.8, "volume": 0.6, "calories": 18, "spoils_hours": 14},
+	"cooked_meat": {"name": "Cooked Meat", "category": "food", "weight": 0.7, "volume": 0.5, "calories": 38},
+	"fresh_water": {"name": "Fresh Water", "category": "water", "weight": 0.5, "volume": 0.6, "hydration": 50},
+	"dirty_water": {"name": "Dirty Water", "category": "water", "weight": 0.5, "volume": 0.6, "hydration": 35, "dirty": true},
+
+	"bandage": {"name": "Bandage", "category": "medical", "weight": 0.1, "volume": 0.1, "heal": 18, "stops_bleeding": true},
+	"antibiotics": {"name": "Antibiotics", "category": "medical", "weight": 0.05, "volume": 0.05, "heal": 10},
+
+	"stone_knife": {"name": "Stone Knife", "category": "tool", "weight": 0.4, "volume": 0.4, "slot": "hand", "damage": 7, "accuracy": 80, "durability": 100, "durability_loss": 1.0},
+	"stone_axe": {"name": "Stone Axe", "category": "tool", "weight": 2.2, "volume": 2.0, "slot": "hand", "damage": 12, "accuracy": 72, "durability": 100, "durability_loss": 2.0},
+	"wooden_spear": {"name": "Wooden Spear", "category": "weapon", "weight": 1.4, "volume": 2.2, "slot": "hand", "damage": 14, "accuracy": 74, "durability": 100, "durability_loss": 2.5},
+	"hammer": {"name": "Hammer", "category": "tool", "weight": 1.8, "volume": 1.4, "slot": "hand", "damage": 9, "accuracy": 70, "durability": 100, "durability_loss": 1.0},
+	"pipe_rifle": {"name": "Pipe Rifle", "category": "weapon", "weight": 3.2, "volume": 3.0, "slot": "hand", "damage": 30, "accuracy": 55, "ranged": true, "ammo": "pipe_round", "durability": 100, "durability_loss": 4.0},
+	"pipe_round": {"name": "Pipe Round", "category": "component", "weight": 0.05, "volume": 0.05},
+
+	"backpack": {"name": "Backpack", "category": "clothing", "weight": 0.6, "volume": 1.5, "slot": "body", "capacity_weight_bonus": 25.0, "capacity_volume_bonus": 25.0},
+	"flashlight": {"name": "Flashlight", "category": "tool", "weight": 0.4, "volume": 0.5, "needs_battery": true},
+	"battery": {"name": "Battery", "category": "component", "weight": 0.1, "volume": 0.1}
+}

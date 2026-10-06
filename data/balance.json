@@ -1,0 +1,35 @@
+{
+	"move_cost": 100,
+	"boat_move_cost": 80,
+	"wait_cost": 100,
+	"gather_cost": 150,
+	"pickup_cost": 50,
+	"consume_cost": 50,
+	"equip_cost": 50,
+	"attack_cost": 100,
+	"open_cost": 80,
+	"craft_cost_default": 200,
+
+	"hunger_per_hour": 3.0,
+	"thirst_per_hour": 4.5,
+	"fatigue_per_hour": 2.5,
+	"stamina_regen_per_hour": 25.0,
+
+	"bleeding_hp_per_minute": 1,
+	"bleed_threshold": 8,
+	"starvation_hp_per_hour": 8,
+	"dehydration_hp_per_hour": 12,
+	"cold_hp_per_hour": 6,
+	"dirty_water_sickness_chance": 0.35,
+
+	"weather_min_minutes": 240,
+	"weather_duration_minutes": 180,
+	"rain_collect_per_minute": 0.06,
+
+	"harvest_power_hand": 15,
+	"harvest_power_axe": 45,
+	"harvest_power_hammer": 60,
+
+	"creature_move_cost": 100,
+	"default_seed": 91837261
+}

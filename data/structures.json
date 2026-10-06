@@ -1,0 +1,47 @@
+{
+	"campfire": {
+		"name": "Campfire", "ingredients": [{"id": "stone", "qty": 4}, {"id": "stick", "qty": 3}],
+		"placement": "land", "time_cost": 250, "station": true, "fuel_max": 6.0,
+		"desc": "Cook food, boil water, warmth at night. Needs fuel."
+	},
+	"shelter": {
+		"name": "Lean-To Shelter", "ingredients": [{"id": "log", "qty": 4}, {"id": "palm_leaf", "qty": 6}, {"id": "cordage", "qty": 3}],
+		"placement": "land", "time_cost": 400,
+		"desc": "Sleep to pass the night and recover fatigue. Softens cold nights."
+	},
+	"storage_crate": {
+		"name": "Storage Crate", "ingredients": [{"id": "log", "qty": 2}, {"id": "stick", "qty": 4}, {"id": "cordage", "qty": 2}],
+		"placement": "land", "time_cost": 300, "container": true,
+		"desc": "Store items. Interact to deposit or withdraw."
+	},
+	"water_collector": {
+		"name": "Rain Collector", "ingredients": [{"id": "palm_leaf", "qty": 4}, {"id": "stick", "qty": 4}, {"id": "plastic", "qty": 2}],
+		"placement": "land", "time_cost": 300,
+		"desc": "Collects fresh water during rain. Interact to bottle water."
+	},
+	"workbench": {
+		"name": "Workbench", "ingredients": [{"id": "log", "qty": 2}, {"id": "stone", "qty": 2}, {"id": "cordage", "qty": 2}],
+		"placement": "land", "time_cost": 350, "station": true,
+		"desc": "Enables advanced crafting recipes."
+	},
+	"wall": {
+		"name": "Wood Wall", "ingredients": [{"id": "log", "qty": 2}],
+		"placement": "land", "time_cost": 200, "blocks_move": true,
+		"desc": "Simple barrier."
+	},
+	"floor": {
+		"name": "Wood Floor", "ingredients": [{"id": "log", "qty": 1}],
+		"placement": "land", "time_cost": 120,
+		"desc": "Marks your camp."
+	},
+	"door": {
+		"name": "Wood Door", "ingredients": [{"id": "stick", "qty": 4}, {"id": "cordage", "qty": 2}],
+		"placement": "land", "time_cost": 200,
+		"desc": "Open and close a gap in a wall."
+	},
+	"raft": {
+		"name": "Raft", "ingredients": [{"id": "log", "qty": 6}, {"id": "cordage", "qty": 6}, {"id": "palm_leaf", "qty": 2}],
+		"placement": "shallow_water_adjacent", "time_cost": 800, "is_raft": true,
+		"desc": "Your way off the island. Build at the shoreline, then board."
+	}
+}

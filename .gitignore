@@ -1,0 +1,15 @@
+# Godot
+.godot/
+*.tmp
+
+# Exports / builds
+builds/*
+!builds/.gitkeep
+
+# Logs
+logs/*
+!logs/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db

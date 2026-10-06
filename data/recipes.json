@@ -1,0 +1,47 @@
+{
+	"cordage": {
+		"ingredients": [{"id": "plant_fiber", "qty": 3}],
+		"tools": [], "skill": "survival", "skill_level": 0,
+		"time_cost": 150, "station": "", "result": "cordage", "result_qty": 1, "skill_xp": 6
+	},
+	"stone_knife": {
+		"ingredients": [{"id": "stone", "qty": 1}, {"id": "stick", "qty": 1}, {"id": "cordage", "qty": 1}],
+		"tools": [], "skill": "fabrication", "skill_level": 0,
+		"time_cost": 200, "station": "", "result": "stone_knife", "result_qty": 1, "skill_xp": 10
+	},
+	"stone_axe": {
+		"ingredients": [{"id": "stone", "qty": 2}, {"id": "stick", "qty": 1}, {"id": "cordage", "qty": 2}],
+		"tools": ["stone_knife"], "skill": "fabrication", "skill_level": 0,
+		"time_cost": 300, "station": "", "result": "stone_axe", "result_qty": 1, "skill_xp": 12
+	},
+	"wooden_spear": {
+		"ingredients": [{"id": "stick", "qty": 2}, {"id": "cordage", "qty": 1}],
+		"tools": ["stone_knife"], "skill": "fabrication", "skill_level": 0,
+		"time_cost": 250, "station": "", "result": "wooden_spear", "result_qty": 1, "skill_xp": 10
+	},
+	"hammer": {
+		"ingredients": [{"id": "stone", "qty": 3}, {"id": "stick", "qty": 1}, {"id": "cordage", "qty": 2}],
+		"tools": ["stone_knife"], "skill": "fabrication", "skill_level": 1,
+		"time_cost": 300, "station": "workbench", "result": "hammer", "result_qty": 1, "skill_xp": 12
+	},
+	"bandage": {
+		"ingredients": [{"id": "cloth_scrap", "qty": 1}, {"id": "plant_fiber", "qty": 1}],
+		"tools": [], "skill": "survival", "skill_level": 0,
+		"time_cost": 100, "station": "", "result": "bandage", "result_qty": 1, "skill_xp": 5
+	},
+	"cooked_fish": {
+		"ingredients": [{"id": "raw_fish", "qty": 1}],
+		"tools": [], "skill": "cooking", "skill_level": 0,
+		"time_cost": 150, "station": "campfire", "result": "cooked_fish", "result_qty": 1, "skill_xp": 6
+	},
+	"cooked_meat": {
+		"ingredients": [{"id": "raw_meat", "qty": 1}],
+		"tools": [], "skill": "cooking", "skill_level": 0,
+		"time_cost": 150, "station": "campfire", "result": "cooked_meat", "result_qty": 1, "skill_xp": 6
+	},
+	"fresh_water": {
+		"ingredients": [{"id": "dirty_water", "qty": 1}],
+		"tools": [], "skill": "cooking", "skill_level": 0,
+		"time_cost": 200, "station": "campfire", "result": "fresh_water", "result_qty": 1, "skill_xp": 4
+	}
+}
