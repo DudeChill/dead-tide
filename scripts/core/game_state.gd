@@ -358,7 +358,7 @@ func player_wait() -> void:
 
 
 func _view_radius() -> int:
-	var base := 9
+	var base := 10
 	if is_night():
 		var has_light := false
 		for it: Dictionary in player.inventory:

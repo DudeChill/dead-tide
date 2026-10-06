@@ -28,6 +28,9 @@ func _draw() -> void:
 	var view := _view_radius_tiles()
 	var origin := tile_to_screen(center)
 
+	# Ocean backdrop beyond the explored fog.
+	draw_rect(Rect2(-9000, -5000, 18000, 10000), Color(0.05, 0.14, 0.28))
+
 	for y: int in range(maxi(center.y - view.y, 0), mini(center.y + view.y + 1, map.height)):
 		for x: int in range(maxi(center.x - view.x, 0), mini(center.x + view.x + 1, map.width)):
 			var p := Vector2i(x, y)
@@ -107,12 +110,12 @@ func _draw_feature(p: Vector2i, map: WorldMap, screen: Vector2) -> void:
 	var kind := str(f.get("kind"))
 	match kind:
 		"palm", "young_palm":
-			var h := 26.0 if kind == "palm" else 14.0
-			draw_line(screen + Vector2(0, 2), screen + Vector2(0, -h), Color(0.45, 0.30, 0.15), 4.0)
-			for i: int in 5:
-				var ang := TAU * i / 5.0
+			var h := 30.0 if kind == "palm" else 15.0
+			draw_line(screen + Vector2(0, 2), screen + Vector2(0, -h), Color(0.45, 0.30, 0.15), 5.0)
+			for i: int in 6:
+				var ang := TAU * i / 6.0
 				var dir := Vector2(cos(ang), sin(ang) * 0.5)
-				draw_line(screen + Vector2(0, -h), screen + Vector2(0, -h) + dir * 11.0, Color(0.25, 0.60, 0.22), 3.0)
+				draw_line(screen + Vector2(0, -h), screen + Vector2(0, -h) + dir * 15.0, Color(0.25, 0.60, 0.22), 4.0)
 		"fiber_plant":
 			for i: int in 3:
 				var off := Vector2((i - 1) * 4.0, 0)

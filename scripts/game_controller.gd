@@ -115,6 +115,15 @@ func _unhandled_input(event: InputEvent) -> void:
 			renderer.game = game
 			hud.show_toast("Loaded.")
 		return
+	if event.is_action_pressed("zoom_in"):
+		camera.zoom = (camera.zoom * 1.15).clamp(Vector2(0.5, 0.5), Vector2(2.5, 2.5))
+		return
+	if event.is_action_pressed("zoom_out"):
+		camera.zoom = (camera.zoom / 1.15).clamp(Vector2(0.5, 0.5), Vector2(2.5, 2.5))
+		return
+	if event.is_action_pressed("debug_menu"):
+		_toggle_debug_panel()
+		return
 	# Movement.
 	for pair: Array in [
 		["move_n", Vector2i(0, -1)], ["move_s", Vector2i(0, 1)],
@@ -541,6 +550,8 @@ func _handle_menu_digit(event: InputEvent) -> void:
 			game.player_fish()
 		"sail":
 			game.travel_to(int(action["id"]))
+		"dbg":
+			_debug_apply(str(action["op"]))
 		_:
 			pass
 
@@ -641,3 +652,70 @@ func _debug_reveal() -> void:
 		for x: int in map.width:
 			map.set_explored(Vector2i(x, y), true)
 	hud.show_toast("Debug: map revealed.")
+
+
+func _toggle_debug_panel() -> void:
+	if hud.is_panel_open("menu") and menu_actions.size() > 0 and str(menu_actions[0].get("type")) == "dbg":
+		hud.close_panel()
+		menu_actions = []
+		return
+	var lines: Array[String] = []
+	lines.append("[b]DEBUG[/b] (dev only)")
+	lines.append("1) Heal full + stop bleeding")
+	lines.append("2) Refill stamina/fatigue")
+	lines.append("3) Give starter materials")
+	lines.append("4) Spawn creature adjacent")
+	lines.append("5) Skip to next dawn")
+	lines.append("6) Teleport to shoreline")
+	menu_actions = [
+		{"type": "dbg", "op": "heal"}, {"type": "dbg", "op": "stamina"},
+		{"type": "dbg", "op": "mats"}, {"type": "dbg", "op": "creature"},
+		{"type": "dbg", "op": "dawn"}, {"type": "dbg", "op": "shore"},
+	]
+	hud.open_panel("menu", "Debug", "\n".join(lines))
+
+
+func _debug_apply(op: String) -> void:
+	var p := game.player
+	match op:
+		"heal":
+			for part: String in p.body:
+				p.body[part]["hp"] = int(p.body[part]["max"])
+				p.body[part]["bleeding"] = false
+			p.alive = true
+			p.pain = 0.0
+			hud.show_toast("Debug: healed.")
+		"stamina":
+			p.stamina = 100.0
+			p.fatigue = 100.0
+			hud.show_toast("Debug: rested.")
+		"mats":
+			p.capacity_weight = 500.0
+			p.capacity_volume = 500.0
+			for item: Array in [["stone", 10], ["stick", 10], ["plant_fiber", 10], ["cordage", 6], ["log", 8], ["palm_leaf", 8]]:
+				p.add_item(str(item[0]), int(item[1]))
+			hud.show_toast("Debug: materials granted.")
+		"creature":
+			var species: String = ["crab", "boar", "snake", "hostile_survivor"][rng_ui.randi_range(0, 3)]
+			var def := Data.creature(species)
+			var t := p.pos + Vector2i(1, 0)
+			if game.current_map().is_clear_for_walk(t):
+				game.actors.append(Actor.make_creature(species, def, t, game.current_island_id))
+				hud.show_toast("Debug: spawned %s east of you." % str(def.get("name", species)))
+		"dawn":
+			var target := (game.day() + 1) * 1440 + 5 * 60
+			game.advance_clock((target - game.clock_minutes) * 100)
+			hud.show_toast("Debug: time skipped.")
+		"shore":
+			var map := game.current_map()
+			for y: int in map.height:
+				for x: int in map.width:
+					if map.tile(Vector2i(x, y)) == Terrain.T.SHALLOW:
+						for d: Vector2i in game._dirs8():
+							if map.is_clear_for_walk(Vector2i(x, y) + d):
+								p.pos = Vector2i(x, y) + d
+								game._reveal_around(p.pos, game._view_radius())
+								hud.show_toast("Debug: teleported to shore.")
+								return
+			hud.show_toast("Debug: no shore found.")
+		_: pass
